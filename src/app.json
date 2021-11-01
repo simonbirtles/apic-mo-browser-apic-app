@@ -1,0 +1,25 @@
+{
+    "apicversion": "2.2(1a)",
+    "appid": "ACIModelBrowser",
+    "author": "Simon Birtles",
+    "category": [
+        "Visibility and Monitoring",
+        "Tools and Utilities"
+    ],
+    "contact": {
+        "contact-email": "aciappcenter-support@haystacknetworks.com",
+        "contact-phone": "+442038838666",
+        "contact-url": "http://www.haystacknetworks.com"
+    },
+    "iconfile": "icon.png",
+    "metaversion": "1.1",
+    "name": "APIC Managed Object Browser",
+    "permissions": [
+        "admin"
+    ],
+    "permissionslevel": "read",
+    "shortdescr": "APIC Managed Object Browser",
+    "vendor": "Haystack Networks UK",
+    "vendordomain": "HaystackNetworks",
+    "version": "1.0"
+}

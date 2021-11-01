@@ -1,0 +1,720 @@
+
+
+html, body {
+    height:100%;
+    width:100%;
+    margin:0;
+    padding:0;
+    overflow: hidden; /*for tooltip div*/
+    font-family:'Arial';
+    font-size: 13px;
+    }
+
+.svg-container { /* div containing tree SVG */
+    border:1px solid black;
+    /* display: inline-block;*/
+    position: absolute; 
+    width: 100%; 
+    top: 0px;
+    /*width:calc(100% - 252px);*/
+    height:100vh;
+    vertical-align: top;
+    overflow: hidden;
+    float: left;
+    z-index: 90;
+}
+
+.svg-content { /* <svg> element holding tree */
+    display: inline-block;
+    position: absolute;
+    top: 0px;
+    left: 0px;width:100%; height:100%
+}
+
+.settings-container {  /* div containing current selected properties */
+    border:0px solid black;
+    display: block;
+    position: relative;  /* absolute\fixed for dragging, relative orignally */
+    left: 1px;
+    top:1px;
+    float: left;
+    z-index: 100;
+}
+
+.node circle {
+    stroke: steelblue;
+    stroke-width: 3px;
+    }
+
+.node text  {
+    font: 10px sans-serif;
+    }
+
+.text-nodeclassname {
+    font: 10px sans-serif;
+    visibility: visible;  
+    }
+
+.text-nodelabel {
+    font: 10px sans-serif;
+    visibility: visible;
+    }
+
+.link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 2px;
+    }
+
+.arrow{
+    stroke-width:5;
+    stroke:#000;
+    stroke-dasharray:5, 5;
+    }
+
+div.tooltip {
+    position: absolute;
+    padding: 2px;
+    font: 12px sans-serif;
+    background: lightsteelblue;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
+    z-index: 95;
+    }
+
+.critical{ fill: red; background-color:transparent;}
+.major { fill: magenta;}
+.minor{ fill: darkorange;}
+.warning{ fill: darkturquoise;}
+.info { fill: darkolivegreen;}
+.normal{ fill: whitesmoke;} 
+
+/* .node text takes priority */
+.criticaltext{fill: white; background-color:transparent;}
+.majortext { fill: white;}
+.minortext{ fill: black;}
+.warningtext{ fill:black;}
+.infotext { fill: white;}
+.normaltext{fill:black;  }
+
+/**************************** small popup for notifications - 
+                                    like no children present ****************************/
+/* Popup container */
+.notify-popup {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+/* The actual popup (appears on top) */
+.notify-popup .popuptext {
+    visibility: visible; 
+    -webkit-animation: fadeIn 1s;
+    animation: fadeIn 1s;
+
+    /* outside stuff */
+    border-radius: 6px;    
+    position: absolute;
+    z-index: 1;  
+    /* width: 160px; */   
+    /* bottom: 125%;
+    left: 50%; */
+    /* margin-left: -80px; */
+
+    /* inside stuff */
+    /*text-align: center; */ /* relevent if width stated i guess */
+    background-color: #555; /* fill */
+    color: #fff;   /* text color*/
+    padding: 8px 9px;
+    /*font-family:'Lucida Console';*/
+    font-size: 12px;
+    white-space:nowrap;
+}
+
+
+/* Add animation (fade in the popup) */
+@-webkit-keyframes fadeIn {
+    from {opacity: 0;} 
+    to {opacity: 1;}
+}
+
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity:1 ;}
+}
+
+
+
+
+
+/*********************************** Menu Bar ***********************************/
+.icon-bar {
+    width: 30px;
+    background-color: #888888;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+}
+
+.icon-bar a {
+    display: block;
+    text-align: center;
+    padding: 1px;
+    transition: all 0.3s ease;
+    color: white;   /* icon color */
+    font-size: 20px;	/* icon size */
+}
+
+.icon-bar a:hover {
+    background-color: steelblue;
+}
+
+.toggle-on {
+    background-color: #555 !important;
+}
+
+
+/******************************** Query Filter Edit Dialog *******************************/
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 999; /* Sit on top */
+    /*  padding-top: 100px;Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    position: relative;
+    background-color: #fefefe;
+    /* margin: auto; */
+    padding: 0;
+    border: 1px solid #888;
+    width: 622px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    /* -webkit-animation-name: animatetop;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatetop;
+    animation-duration: 0.4s; */
+    /*font-family:'Lucida Console';*/
+}
+
+/* Add Animation */
+/* @-webkit-keyframes animatetop {
+    from {top:-300px; opacity:0} 
+    to {top:0; opacity:1}
+}
+
+@keyframes animatetop {
+    from {top:-300px; opacity:0}
+    to {top:0; opacity:1}
+} */
+
+/* The Close Button */
+.close {
+    color: white;
+    float: right;
+    font-size: 20px;
+    font-weight: bold;
+    float: right;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/***** Dialog Header *****/
+.modal-header {
+    padding: 2px 10px;
+    background-color: steelblue;
+    color: white;
+    height: 25px;
+    cursor: pointer;
+}
+
+.modal-header #dialog-title {
+    margin: auto;
+    width: 75%;
+    padding: 5px 5px 5px 5px;
+    float: left;
+}
+
+
+
+/***** Dialog Body *****/
+.modal-body {
+    padding: 2px 16px;
+    /* overflow: auto; */
+     word-wrap: break-word; 
+    /* white-space: pre-line; */
+}
+
+/***** Dialog Footer *****/
+.modal-footer {
+    padding: 2px 16px;
+    background-color: steelblue;
+    color: white;
+}
+
+/* texarea for edit query */
+#query-text{
+    position: relative;
+    /* width: 255px;  */
+    height: 100px;
+    width: 100%;
+    resize: none;
+    overflow: auto;
+    /* word-wrap: break-word; */
+    word-break:break-all;
+     /*White-space:normal; */
+  
+}
+
+td.attribute{
+    width: 150px;
+    word-break:break-all;
+    text-align: right;
+    
+}
+
+td.value{
+    width: 400px;
+    word-break:break-all;
+}
+
+
+.query-button{
+    vertical-align: top;
+    border-width: 1px;
+    border-color: white;
+    border-style: solid;
+    margin: 0 auto;
+    top: 2px;
+    width: 75px;
+    display: table-cell;
+    text-align: center;
+}
+
+.query-button-spacer{
+    vertical-align: top;
+    border-style: none;
+    margin: 0 auto;
+    top: 2px;
+    width: 15px;
+    display: table-cell;
+    text-align: center;
+}
+
+.query-button:hover,
+.query-button:focus {
+    /* color: #000; */
+    text-decoration: none;
+    cursor: pointer;
+    color: steelblue;
+    background-color: white;
+}
+
+
+/******************************** Object Properties Dialog *********************************/
+
+.obj-prop-content {
+    position: absolute;
+    background-color: #fefefe;
+    /* margin: auto; */
+    padding: 0;
+    border: 1px solid #888;
+    width: 400px;
+    height: 640px;
+    right: 1px;
+    top: 1px;
+    z-index: 190;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    /*font-family:'Lucida Console';*/
+    overflow: none;
+}
+
+                        /***** Dialog Header *****/
+.obj-prop-header {
+    padding: 2px 10px;
+    background-color: steelblue;
+    color: white;
+    height: 25px;
+    cursor: pointer;
+    display: block;
+}
+
+.obj-prop-header #obj-prop-title {
+    margin: auto;
+    width: 75%;
+    padding: 5px 5px 5px 5px;
+    float: left;
+    white-space: nowrap;
+}
+
+                        /****** Dialog Body ******/
+.obj-prop-body {
+    padding: 3px 16px;
+    overflow: auto;
+    word-wrap: break-word; 
+    /* height: 580px; */
+    height: calc(100% - 60px);
+    /* white-space: pre-line; */
+    display: block;
+}
+
+                        /***** Dialog Footer *****/
+.obj-prop-footer {
+    position: absolute;
+    background-color: steelblue;
+    color: white;
+    height: 25px;
+    bottom: 0px;
+    width: 100%;    
+    display: block;
+}
+
+td.obj-prop-attribute{
+    min-width: 50px; 
+    word-break:break-all;
+    text-align: right;    
+    white-space: nowrap;
+}
+
+td.obj-prop-value{
+    width: 400px;
+    word-break:break-all;
+}
+
+.obj-prop-attribute text {
+    font-size: 12px;
+    font-family: "Lucida Console";
+    color: purple;
+}
+.obj-prop-value text {
+    font-size: 12px;
+    font-family: "Lucida Console";
+    color: red;
+}
+.obj-prop-value a {
+    font-size: 12px;
+    font-family: "Lucida Console";
+    color: red;
+}
+
+
+/******************************* Get Root Node Selection -i.e. UNI, Topology, Comp ... ?  ******************************/
+
+.root-node-content {
+    /* display: none; */
+    position: absolute;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 0;
+    border: 1px solid #888;
+    width: 500px;
+    /* height: 400px; */
+    /* right: 50%;
+    top: 50%; */
+    z-index: 190;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    /*font-family:'Lucida Console';*/
+}
+
+                        /***** Dialog Header *****/
+.root-node-header {
+    padding: 2px 10px;
+    background-color: steelblue;
+    color: white;
+    height: 25px;
+    cursor: pointer;
+}
+
+.root-node-header #root-node-title {
+    margin: auto;
+    width: 75%;
+    padding: 5px 5px 5px 5px;
+    float: left;
+    white-space: nowrap;
+}
+
+                        /****** Dialog Body ******/
+.root-node-body {
+    padding: 2px 16px;
+    /* overflow: auto; */
+     word-wrap: break-word; 
+    /* white-space: pre-line; */
+}
+
+                        /***** Dialog Footer *****/
+.root-node-footer {
+    /* position: absolute; */
+    /* background-color: steelblue; */
+    /* color: white; */
+    /* height: 25px; */
+    /* bottom: 0px; */
+    /* width: 100%;     */
+
+    padding: 2px 16px;
+    background-color: steelblue;
+    color: white;
+}
+
+td.root-node-attribute{
+    min-width: 50px; 
+    word-break:break-all;
+    text-align: right;    
+    white-space: nowrap;
+}
+
+td.root-node-value{
+    width: 400px;
+    word-break:break-all;
+}
+
+.root-node-attribute text {
+    font-size: 12px;
+    font-family: "Lucida Console";
+    color: purple;
+}
+.root-node-value text {
+    font-size: 12px;
+    font-family: "Lucida Console";
+    color: red;
+}
+
+/********** loader **********/
+
+.loader-container {
+    width:100%;
+    justify-content:center;
+    align-items:center;
+    display: flex;
+}
+
+.loader-loader-container {
+    display: inline-block;
+}
+
+.loader-text-container {
+    display: inline-block;
+}
+
+.loader {
+    border: 8px solid #D9DDDF; /* Light grey */
+    border-top: 8px solid lightsteelblue; /* Blue */
+    border-bottom: 8px solid lightsteelblue; /* Blue */
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+
+/******* Root Node Options/Select Dropdown **********/
+.rootselect {
+    margin: 25px 50px 25px 50px;
+    border: 1px solid #111;
+    /* background: transparent; */
+    width: 75%;
+    padding: 0px 35px 5px 5px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    height: 30px;
+    /* -webkit-appearance: none; */
+    /* -moz-appearance: none; */
+    /* appearance: none; */
+    /* background: url(http://www.yyy.com/favicon.ico) 96% / 15% no-repeat #eee; */
+}
+
+
+
+/********************************* App Messages Dialog Wrapper *********************************/
+
+.app-msg-content {
+    position: absolute;
+    background-color: #fefefe;
+    /* margin: auto; */
+    padding: 0;
+    border: 1px solid #888;
+    width: 400px;
+    height: 250px;
+    right: 1px;
+    bottom: 1px;
+    z-index: 190;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    /*font-family:'Lucida Console';*/
+    overflow: none;
+}
+
+/********************************* App Messages Dialog Header *********************************/
+.app-msg-header {
+    padding: 2px 10px;
+    background-color: steelblue;
+    color: white;
+    height: 25px;
+    cursor: pointer;
+
+}
+
+.app-msg-header #app-msg-title {
+    margin: auto;
+    width: 75%;
+    padding: 5px 5px 5px 5px;
+    float: left;
+    white-space: nowrap;
+}
+
+/********************************* App Messages Dialog Body *********************************/
+.app-msg-body {
+    /* padding: 3px 16px; */
+    overflow: auto;
+    word-wrap: break-word; 
+    height: 200px;
+    /* white-space: pre-line; */
+
+}
+
+/* outer div container - holds .app-msg-msg-container */
+.app-msg-container{
+    display: block;
+    /* width: 290px; */
+    margin: 0 auto;
+    border: solid 1px #ccc;
+    /* border-radius: 5px; */
+    overflow: hidden;
+}
+
+/* inner container holding .msg */
+.app-msg-msg-container{
+    display: block;
+    height: 195px;
+    overflow: auto;
+    /* transform: rotate(180deg);
+    direction: rtl; */
+}
+
+/* per message */
+.app-msg-msg{
+    margin: 10px ;
+    border-bottom: solid 1px #ccc;
+    padding: 2px 5px;
+    font-size: 12px;
+    /* transform: rotate(180deg);
+    direction: ltr; */
+}
+/********************************* App Messages Dialog Footer *********************************/
+.app-msg-footer {
+    padding: 2px 16px;
+    background-color: steelblue;
+    color: white;
+
+}
+
+
+
+
+
+/********************************* APIC Login Dialog Wrapper *********************************/
+
+/* The Modal Window */
+.apic-login-modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 999; /* Sit on top */
+    /*  padding-top: 100px;Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.apic-login-content {
+    position: absolute;
+    background-color: #fefefe;
+    /* margin: auto; */
+    padding: 0;
+    border: 1px solid #888;
+    width: 500px;
+    height: 300px;
+    left: 370px;
+    top: 140px;
+    z-index: 190;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    /*font-family:'Lucida Console';*/
+    overflow: none;
+}
+
+/********************************* APIC Login Dialog Header *********************************/
+.apic-login-header {
+    padding: 2px 10px;
+    background-color: steelblue;
+    color: white;
+    height: 25px;
+    cursor: pointer;
+}
+
+.apic-login-header #apic-login-title {
+    margin: auto;
+    width: 75%;
+    padding: 5px 5px 5px 5px;
+    float: left;
+    white-space: nowrap;
+}
+
+/********************************* APIC Login Dialog Body *********************************/
+
+.apic-login-body {
+    /* padding: 3px 16px; */
+    overflow: none;
+    word-wrap: break-word; 
+    height: 250px;
+    /* white-space: pre-line; */
+}
+
+/* outer div container - holds .apic-login-msg-container */
+.apic-login-container{
+    padding: 10px 10px;
+    display: block;
+    margin: 0 auto;
+    overflow: none;
+    font-size: 14px;
+    height: 230px;
+}
+
+.apic-login-container tr{
+    height: 25px;
+}
+
+.apic-login-container table{
+    padding-bottom: 15px;
+}
+
+/********************************* APIC Login Dialog Footer *********************************/
+
+.apic-login-footer {
+    padding: 2px 16px;
+    background-color: steelblue;
+    color: white;
+}
+
+
+
+
